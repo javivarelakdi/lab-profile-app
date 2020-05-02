@@ -26,7 +26,7 @@ authRoutes.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, nex
 });
 
 authRoutes.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
-	const { username, password, campus, course } = res.locals.auth;
+	const { username, password, campus, course, file } = res.locals.auth;
 	try {
 		const user = await User.findOne({ username });
 		if (user) {
@@ -36,7 +36,7 @@ authRoutes.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, ne
 		const salt = bcrypt.genSaltSync(bcryptSalt);
 		const hashedPassword = bcrypt.hashSync(password, salt);
 
-		const newUser = await User.create({ username, password: hashedPassword, course, campus });
+		const newUser = await User.create({ username, password: hashedPassword, course, campus, file });
 		req.session.currentUser = newUser;
 		return res.json(newUser);
 	} catch (error) {
